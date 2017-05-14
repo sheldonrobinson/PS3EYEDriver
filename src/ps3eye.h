@@ -33,6 +33,19 @@
 #define debug(...) 
 #endif
 
+#if defined(_WIN32) && defined(_PS3EYE_BUILD_DLL)
+/* We are building GLFW as a Win32 DLL */
+#define PS3EYEAPI __declspec(dllexport)
+#elif defined(_WIN32) && defined(PS3EYE_DLL)
+/* We are calling GLFW as a Win32 DLL */
+#define PS3EYEAPI __declspec(dllimport)
+#elif defined(__GNUC__) && defined(_PS3EYE_BUILD_DLL)
+/* We are building GLFW as a shared / dynamic library */
+#define PS3EYEAPI __attribute__((visibility("default")))
+#else
+/* We are building or calling GLFW as a static library */
+#define PS3EYEAPI
+#endif
 
 namespace ps3eye {
 
@@ -51,17 +64,17 @@ public:
 	static const uint16_t VENDOR_ID;
 	static const uint16_t PRODUCT_ID;
 
-	PS3EYECam(libusb_device *device);
+	PS3EYEAPI PS3EYECam(libusb_device *device);
 	~PS3EYECam();
 
-	bool init(uint32_t width = 0, uint32_t height = 0, uint16_t desiredFrameRate = 30, EOutputFormat outputFormat = EOutputFormat::BGR);
-	void start();
-	void stop();
+	PS3EYEAPI bool init(uint32_t width = 0, uint32_t height = 0, uint16_t desiredFrameRate = 30, EOutputFormat outputFormat = EOutputFormat::BGR);
+	PS3EYEAPI void start();
+	PS3EYEAPI void stop();
 
 	// Controls
 
-	bool getAutogain() const { return autogain; }
-	void setAutogain(bool val) {
+	PS3EYEAPI bool getAutogain() const { return autogain; }
+	PS3EYEAPI void setAutogain(bool val) {
 	    autogain = val;
 	    if (val) {
 			sccb_reg_write(0x13, 0xf7); //AGC,AEC,AWB ON
@@ -74,8 +87,8 @@ public:
 			setExposure(exposure);
 	    }
 	}
-	bool getAutoWhiteBalance() const { return awb; }
-	void setAutoWhiteBalance(bool val) {
+	PS3EYEAPI bool getAutoWhiteBalance() const { return awb; }
+	PS3EYEAPI void setAutoWhiteBalance(bool val) {
 	    awb = val;
 	    if (val) {
 			sccb_reg_write(0x63, 0xe0); //AWB ON
@@ -83,8 +96,8 @@ public:
 			sccb_reg_write(0x63, 0xAA); //AWB OFF
 	    }
 	}
-	uint8_t getGain() const { return gain; }
-	void setGain(uint8_t val) {
+	PS3EYEAPI uint8_t getGain() const { return gain; }
+	PS3EYEAPI void setGain(uint8_t val) {
 	    gain = val;
 	    switch(val & 0x30){
 		case 0x00:
@@ -105,51 +118,51 @@ public:
 	    }
 	    sccb_reg_write(0x00, val);
 	}
-	uint8_t getExposure() const { return exposure; }
-	void setExposure(uint8_t val) {
+	PS3EYEAPI uint8_t getExposure() const { return exposure; }
+	PS3EYEAPI void setExposure(uint8_t val) {
 	    exposure = val;
 	    sccb_reg_write(0x08, val>>7);
     	sccb_reg_write(0x10, val<<1);
 	}
-	uint8_t getSharpness() const { return sharpness; }
-	void setSharpness(uint8_t val) {
+	PS3EYEAPI uint8_t getSharpness() const { return sharpness; }
+	PS3EYEAPI void setSharpness(uint8_t val) {
 	    sharpness = val;
 	    sccb_reg_write(0x91, val); //vga noise
     	sccb_reg_write(0x8E, val); //qvga noise
 	}
-	uint8_t getContrast() const { return contrast; }
-	void setContrast(uint8_t val) {
+	PS3EYEAPI uint8_t getContrast() const { return contrast; }
+	PS3EYEAPI void setContrast(uint8_t val) {
 	    contrast = val;
 	    sccb_reg_write(0x9C, val);
 	}
-	uint8_t getBrightness() const { return brightness; }
-	void setBrightness(uint8_t val) {
+	PS3EYEAPI uint8_t getBrightness() const { return brightness; }
+	PS3EYEAPI void setBrightness(uint8_t val) {
 	    brightness = val;
 	    sccb_reg_write(0x9B, val);
 	}
-	uint8_t getHue() const { return hue; }
-	void setHue(uint8_t val) {
+	PS3EYEAPI uint8_t getHue() const { return hue; }
+	PS3EYEAPI void setHue(uint8_t val) {
 		hue = val;
 		sccb_reg_write(0x01, val);
 	}
-	uint8_t getRedBalance() const { return redblc; }
-	void setRedBalance(uint8_t val) {
+	PS3EYEAPI uint8_t getRedBalance() const { return redblc; }
+	PS3EYEAPI void setRedBalance(uint8_t val) {
 		redblc = val;
 		sccb_reg_write(0x43, val);
 	}
-	uint8_t getBlueBalance() const { return blueblc; }
-	void setBlueBalance(uint8_t val) {
+	PS3EYEAPI uint8_t getBlueBalance() const { return blueblc; }
+	PS3EYEAPI void setBlueBalance(uint8_t val) {
 		blueblc = val;
 		sccb_reg_write(0x42, val);
 	}
-	uint8_t getGreenBalance() const { return greenblc; }
-	void setGreenBalance(uint8_t val) {
+	PS3EYEAPI uint8_t getGreenBalance() const { return greenblc; }
+	PS3EYEAPI void setGreenBalance(uint8_t val) {
 		greenblc = val;
 		sccb_reg_write(0x44, val);
 	}
-    bool getFlipH() const { return flip_h; }
-    bool getFlipV() const { return flip_v; }
-	void setFlip(bool horizontal = false, bool vertical = false) {
+	PS3EYEAPI bool getFlipH() const { return flip_h; }
+	PS3EYEAPI bool getFlipV() const { return flip_v; }
+	PS3EYEAPI void setFlip(bool horizontal = false, bool vertical = false) {
         flip_h = horizontal;
         flip_v = vertical;
 		uint8_t val = sccb_reg_read(0x0c);
@@ -160,46 +173,46 @@ public:
 	}
     
 
-    bool isStreaming() const { return is_streaming; }
-    bool isInitialized() const { return device_ != NULL && handle_ != NULL && usb_buf != NULL; }
+	PS3EYEAPI bool isStreaming() const { return is_streaming; }
+	PS3EYEAPI bool isInitialized() const { return device_ != NULL && handle_ != NULL && usb_buf != NULL; }
 
-	bool getUSBPortPath(char *out_identifier, size_t max_identifier_length) const;
+	PS3EYEAPI bool getUSBPortPath(char *out_identifier, size_t max_identifier_length) const;
 	
 	// Get a frame from the camera. Notes:
 	// - If there is no frame available, this function will block until one is
 	// - The output buffer must be sized correctly, depending out the output format. See EOutputFormat.
-	void getFrame(uint8_t* frame);
+	PS3EYEAPI void getFrame(uint8_t* frame);
 
-	uint32_t getWidth() const { return frame_width; }
-	uint32_t getHeight() const { return frame_height; }
-	uint16_t getFrameRate() const { return frame_rate; }
-	bool setFrameRate(uint8_t val) {
+	PS3EYEAPI uint32_t getWidth() const { return frame_width; }
+	PS3EYEAPI uint32_t getHeight() const { return frame_height; }
+	PS3EYEAPI uint16_t getFrameRate() const { return frame_rate; }
+	PS3EYEAPI bool setFrameRate(uint8_t val) {
 		if (is_streaming) return false;
 		frame_rate = ov534_set_frame_rate(val, true);
 		return true;
 	}
-	uint32_t getRowBytes() const { return frame_width * getOutputBytesPerPixel(); }
-	uint32_t getOutputBytesPerPixel() const;
+	PS3EYEAPI uint32_t getRowBytes() const { return frame_width * getOutputBytesPerPixel(); }
+	PS3EYEAPI uint32_t getOutputBytesPerPixel() const;
 
 	//
-	static const std::vector<PS3EYERef>& getDevices( bool forceRefresh = false );
+	PS3EYEAPI static const std::vector<PS3EYERef>& getDevices( bool forceRefresh = false );
 
 private:
 	PS3EYECam(const PS3EYECam&);
     void operator=(const PS3EYECam&);
 
-	void release();
+	PS3EYEAPI void release();
 
 	// usb ops
-	uint16_t ov534_set_frame_rate(uint16_t frame_rate, bool dry_run = false);
-	void ov534_set_led(int status);
-	void ov534_reg_write(uint16_t reg, uint8_t val);
-	uint8_t ov534_reg_read(uint16_t reg);
-	int sccb_check_status();
-	void sccb_reg_write(uint8_t reg, uint8_t val);
-	uint8_t sccb_reg_read(uint16_t reg);
-	void reg_w_array(const uint8_t (*data)[2], int len);
-	void sccb_w_array(const uint8_t (*data)[2], int len);
+	PS3EYEAPI uint16_t ov534_set_frame_rate(uint16_t frame_rate, bool dry_run = false);
+	PS3EYEAPI void ov534_set_led(int status);
+	PS3EYEAPI void ov534_reg_write(uint16_t reg, uint8_t val);
+	PS3EYEAPI uint8_t ov534_reg_read(uint16_t reg);
+	PS3EYEAPI int sccb_check_status();
+	PS3EYEAPI void sccb_reg_write(uint8_t reg, uint8_t val);
+	PS3EYEAPI uint8_t sccb_reg_read(uint16_t reg);
+	PS3EYEAPI void reg_w_array(const uint8_t (*data)[2], int len);
+	PS3EYEAPI void sccb_w_array(const uint8_t (*data)[2], int len);
 
 	// controls
 	bool autogain;

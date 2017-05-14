@@ -1,0 +1,11 @@
+LIBRARY "PS3EYEDriver.dll"
+EXPORTS
+  ps3eye_init
+  ps3eye_uninit
+  ps3eye_count_connected
+  ps3eye_open
+  ps3eye_get_unique_identifier
+  ps3eye_grab_frame
+  ps3eye_close
+  ps3eye_set_parameter
+  ps3eye_get_parameter

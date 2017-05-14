@@ -45,6 +45,7 @@ print_renderer_info(SDL_Renderer *renderer)
 
 void run_camera(int width, int height, int fps, Uint32 duration)
 {
+	printf("Target mode: %dx%d@%d\n", width, height, fps);
 	ps3eye_context ctx(width, height, fps);
 	if (!ctx.hasDevices()) {
 		printf("No PS3 Eye camera connected\n");
@@ -53,7 +54,7 @@ void run_camera(int width, int height, int fps, Uint32 duration)
 	ctx.eye->setFlip(true); /* mirrored left-right */
 
 	char title[256];
-	sprintf(title, "%dx%d@%d\n", ctx.eye->getWidth(), ctx.eye->getHeight(), ctx.eye->getFrameRate());
+	sprintf_s(title, "%dx%d@%d\n", ctx.eye->getWidth(), ctx.eye->getHeight(), ctx.eye->getFrameRate());
 
 	SDL_Window *window = SDL_CreateWindow(
 		title, SDL_WINDOWPOS_UNDEFINED,
@@ -134,8 +135,7 @@ void run_camera(int width, int height, int fps, Uint32 duration)
 	SDL_DestroyWindow(window);
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	bool mode_test = false;
     int width = 640;
@@ -152,6 +152,104 @@ main(int argc, char *argv[])
                 height = 240;
                 good_arg = true;
             }
+
+			if (std::string(argv[arg_ix]) == "--hvga")
+			{
+				width = 480;
+				height = 320;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--vga")
+			{
+				width = 640;
+				height = 480;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--vga")
+			{
+				width = 768;
+				height = 576;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--wvga")
+			{
+				width = 768;
+				height = 480;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--fwvga")
+			{
+				width = 854;
+				height = 480;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--svga")
+			{
+				width = 800;
+				height = 600;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--dvga")
+			{
+				width = 960;
+				height = 640;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--wsvga")
+			{
+				width = 1024;
+				height = 600;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--xga")
+			{
+				width = 1024;
+				height = 768;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--nhd")
+			{
+				width = 640;
+				height = 360;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--qhd")
+			{
+				width = 960;
+				height = 540;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--hd")
+			{
+				width = 1280;
+				height = 720;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--wxga")
+			{
+				width = 1280;
+				height = 800;
+				good_arg = true;
+			}
+
+			if (std::string(argv[arg_ix]) == "--hxga")
+			{
+				width = 1280;
+				height = 960;
+				good_arg = true;
+			}
 
             if ((std::string(argv[arg_ix]) == "--fps") && argc > arg_ix)
             {
